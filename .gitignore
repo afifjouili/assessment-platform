@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+frontend/.next/
+frontend/out/
+
+# Environment files
+backend/.env
+.env
+.env.local
+
+# Database
+backend/data/
+*.db
+*.sqlite
+*.sqlite3
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp/test scripts at root
+check-*.js
+compare-*.js
+find-*.js
+read-*.js
+recent-*.js
+search-*.js
+create-repo.json
+
+# Backup files
+*.bak
