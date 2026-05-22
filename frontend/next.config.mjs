@@ -4,6 +4,9 @@ const nextConfig = {
   outputFileTracingIncludes: {
     '/api/**': ['./node_modules/sql.js/dist/sql-wasm.wasm'],
   },
+  experimental: {
+    serverComponentsExternalPackages: ['sql.js', 'bcryptjs'],
+  },
   webpack: (config, { isServer }) => {
     // Allow WASM files to be bundled
     config.experiments = {
@@ -26,3 +29,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
