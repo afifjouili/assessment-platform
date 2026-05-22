@@ -2,6 +2,7 @@ import initSqlJs from 'sql.js';
 import bcrypt from 'bcryptjs';
 import path from 'path';
 import fs from 'fs';
+import { wasmBase64 } from './sql-wasm-base64.js';
 
 // On Vercel: /tmp is writable. Locally: use backend/data for compatibility.
 const dbPath = process.env.VERCEL
@@ -101,19 +102,8 @@ export async function initializeDatabase() {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
-    let wasmBinary;
-    if (process.env.VERCEL) {
-      // On Vercel, fetch the WASM binary from the public directory via the deployment URL
-      const host = process.env.VERCEL_URL || 'conformity-by-iwatch.vercel.app';
-      const protocol = host.includes('localhost') ? 'http' : 'https';
-      const response = await fetch(`${protocol}://${host}/sql-wasm.wasm`);
-      if (!response.ok) throw new Error(`Failed to fetch WASM: ${response.statusText}`);
-      wasmBinary = Buffer.from(await response.arrayBuffer());
-    } else {
-      // Locally, read directly from node_modules
-      const wasmPath = path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
-      wasmBinary = fs.readFileSync(wasmPath);
-    }
+    // Decode base64 WASM binary directly from memory
+    const wasmBinary = Buffer.from(wasmBase64, 'base64');
     
     const SQL = await initSqlJs({ wasmBinary });
     let sqlDb;
