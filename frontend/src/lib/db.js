@@ -8,10 +8,6 @@ const dbPath = process.env.VERCEL
   ? '/tmp/assessment.db'
   : path.join(process.cwd(), '..', 'backend', 'data', 'assessment.db');
 
-// Path to the sql.js WASM binary bundled with node_modules
-const wasmPath = path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
-
-
 class DatabaseWrapper {
   constructor(sqlDb) {
     this.sqlDb = sqlDb;
@@ -105,8 +101,20 @@ export async function initializeDatabase() {
   if (initPromise) return initPromise;
 
   initPromise = (async () => {
-    // Read WASM binary from disk — required for Vercel serverless (no network fetch)
-    const wasmBinary = fs.readFileSync(wasmPath);
+    let wasmBinary;
+    if (process.env.VERCEL) {
+      // On Vercel, fetch the WASM binary from the public directory via the deployment URL
+      const host = process.env.VERCEL_URL || 'conformity-by-iwatch.vercel.app';
+      const protocol = host.includes('localhost') ? 'http' : 'https';
+      const response = await fetch(`${protocol}://${host}/sql-wasm.wasm`);
+      if (!response.ok) throw new Error(`Failed to fetch WASM: ${response.statusText}`);
+      wasmBinary = Buffer.from(await response.arrayBuffer());
+    } else {
+      // Locally, read directly from node_modules
+      const wasmPath = path.join(process.cwd(), 'node_modules', 'sql.js', 'dist', 'sql-wasm.wasm');
+      wasmBinary = fs.readFileSync(wasmPath);
+    }
+    
     const SQL = await initSqlJs({ wasmBinary });
     let sqlDb;
 
