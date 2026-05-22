@@ -1,3 +1,6 @@
+// Shared question data — 17 axes, 80 questions
+// Tunisian NGO compliance self-assessment (Decree 88/2011)
+
 export const AXES = [
   { id: 1, name: "التأسيس والإشهار", questions: [
     "هل تم إيداع ملف التأسيس لدى الكاتب العام للحكومة؟",
@@ -119,4 +122,4 @@ export const SCORE_LABELS = ["غير مطبق", "تطبيق جزئي", "مطبق
 
 export const TOTAL_QUESTIONS = AXES.reduce((s, a) => s + a.questions.length, 0);
 
-export const AXES_PER_PAGE = 4;
+export const AXES_PER_PAGE = 2;
