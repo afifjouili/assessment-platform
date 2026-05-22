@@ -36,6 +36,6 @@ export async function POST(request) {
     return NextResponse.json({ assessment }, { status: 201 });
   } catch (err) {
     console.error('Create assessment error:', err);
-    return NextResponse.json({ error: 'Internal server error.' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error.', details: err.message, stack: err.stack }, { status: 500 });
   }
 }
